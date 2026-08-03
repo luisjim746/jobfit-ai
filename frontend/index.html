@@ -1,20 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>JobFit AI</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="./css/styles.css">
-    </head>    
+    <meta name="description"
+        content="JobFit AI analyzes job offers for junior and trainee developer roles and helps candidates prepare.">
 
-    <body>
-        <main id="app">
+    <link rel="icon" href="data:,">
+
+    <title>JobFit AI</title>
+
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+        <div class="brand">
+            <span class="brand-mark" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="1.5" fill="none" />
+
+                    <path d="M8 9h8M8 12h8M8 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+            </span>
+
             <h1>JobFit AI</h1>
-            <p>Project setup completed successfully.</p>
-        </main>
+        </div>
 
-        <script type="module" src="./js/main.js"></script>
-    </body>
+        <p class="tagline">Paste a job offer. Understand what it really asks for.</p>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+        <div class="workspace">
+
+            <!-- ==================== INPUT PANEL ==================== -->
+
+            <section class="panel panel-input" aria-labelledby="input-heading">
+                <!-- Decorative scanner corners -->
+                <span class="scan-corner scan-corner-tl" aria-hidden="true"></span>
+
+                <span class="scan-corner scan-corner-tr" aria-hidden="true"></span>
+
+                <span class="scan-corner scan-corner-bl" aria-hidden="true"></span>
+
+                <span class="scan-corner scan-corner-br" aria-hidden="true"></span>
+
+                <h2 id="input-heading">Paste the job offer</h2>
+
+                <form id="analyze-form" novalidate>
+                    <fieldset class="profile-fieldset" aria-describedby="profile-hint">
+                        <legend>Target profile</legend>
+
+                        <p id="profile-hint" class="field-hint">
+                            General Tech Role is selected by default.
+                        </p>
+
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="profile-frontend" name="profile" value="frontend">
+
+                                <label for="profile-frontend">
+                                    Frontend Developer
+                                </label>
+                            </div>
+
+                            <div class="radio-option">
+                                <input type="radio" id="profile-javascript" name="profile" value="javascript">
+
+                                <label for="profile-javascript">
+                                    JavaScript Developer
+                                </label>
+                            </div>
+
+                            <div class="radio-option">
+                                <input type="radio" id="profile-react" name="profile" value="react">
+
+                                <label for="profile-react">
+                                    React Developer
+                                </label>
+                            </div>
+
+                            <div class="radio-option">
+                                <input type="radio" id="profile-general" name="profile" value="general" checked>
+
+                                <label for="profile-general">
+                                    General Tech Role
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="field">
+                        <label for="offer-text">
+                            Job offer text
+                        </label>
+
+                        <textarea id="offer-text" name="jobDescription" rows="12" required
+                            aria-describedby="offer-text-hint offer-text-error"></textarea>
+
+                        <p id="offer-text-hint" class="field-hint">
+                            Paste the full offer, including responsibilities,
+                            requirements and preferred qualifications.
+                        </p>
+
+                        <p id="offer-text-error" class="field-error" role="alert" hidden></p>
+                    </div>
+
+                    <button type="submit" id="analyze-button" class="btn-primary">
+                        Analyze Offer
+                    </button>
+                </form>
+            </section>
+
+            <!-- ==================== ANALYSIS PANEL ==================== -->
+
+            <section class="panel panel-analysis" aria-labelledby="analysis-heading">
+                <!-- Decorative scanner corners -->
+                <span class="scan-corner scan-corner-tl" aria-hidden="true"></span>
+
+                <span class="scan-corner scan-corner-tr" aria-hidden="true"></span>
+
+                <span class="scan-corner scan-corner-bl" aria-hidden="true"></span>
+
+                <span class="scan-corner scan-corner-br" aria-hidden="true"></span>
+
+                <h2 id="analysis-heading">Analysis</h2>
+
+                <!-- Empty state: visible by default -->
+                <div id="empty-state" class="state-empty">
+                    <span class="state-icon" aria-hidden="true">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5" />
+
+                            <path d="M14.5 14.5L19 19" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </span>
+
+                    <p>
+                        Paste a job offer and we'll tell you what it really asks for.
+                    </p>
+                </div>
+
+                <!-- Loading state: activated later with JavaScript -->
+                <div id="loading-state" class="state-loading" role="status" aria-live="polite" hidden>
+                    <p class="loading-message">
+                        Analyzing the offer…
+                    </p>
+                </div>
+
+                <!-- Error state: activated later with JavaScript -->
+                <div id="error-state" class="state-error" hidden>
+                    <p id="analysis-error-message" class="error-message" role="alert"></p>
+
+                    <button type="button" id="retry-button" class="btn-secondary">
+                        Retry
+                    </button>
+                </div>
+
+                <!-- Result state: populated later with JavaScript -->
+                <div id="result-state" hidden>
+                    <div class="result-header">
+                        <span id="experience-level-badge" class="level-badge"></span>
+
+                        <button type="button" id="copy-button" class="btn-secondary">
+                            Copy analysis
+                        </button>
+                    </div>
+
+                    <section class="result-card" aria-labelledby="role-summary-heading">
+                        <h3 id="role-summary-heading">
+                            Role summary
+                        </h3>
+
+                        <p id="role-summary"></p>
+                    </section>
+
+                    <section class="result-card" aria-labelledby="required-skills-heading">
+                        <h3 id="required-skills-heading">
+                            Required skills
+                        </h3>
+
+                        <ul id="required-skills" class="tag-list"></ul>
+                    </section>
+
+                    <section class="result-card" aria-labelledby="nice-to-have-heading">
+                        <h3 id="nice-to-have-heading">
+                            Nice-to-have skills
+                        </h3>
+
+                        <ul id="nice-to-have-skills" class="tag-list"></ul>
+                    </section>
+
+                    <section class="result-card" aria-labelledby="experience-level-heading">
+                        <h3 id="experience-level-heading">
+                            Experience level
+                        </h3>
+
+                        <p id="experience-level-reasoning"></p>
+                    </section>
+
+                    <section class="result-card" aria-labelledby="cv-keywords-heading">
+                        <h3 id="cv-keywords-heading">
+                            CV / LinkedIn keywords
+                        </h3>
+
+                        <ul id="cv-keywords" class="tag-list"></ul>
+                    </section>
+
+                    <section class="result-card" aria-labelledby="learning-gaps-heading">
+                        <h3 id="learning-gaps-heading">
+                            Learning gaps
+                        </h3>
+
+                        <ul id="learning-gaps" class="tag-list"></ul>
+                    </section>
+
+                    <section class="result-card" aria-labelledby="interview-checklist-heading">
+                        <h3 id="interview-checklist-heading">
+                            Interview preparation checklist
+                        </h3>
+
+                        <ul id="interview-checklist" class="checklist-list"></ul>
+                    </section>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== HISTORY ==================== -->
+
+        <section class="history-section" aria-labelledby="history-heading">
+            <h2 id="history-heading">
+                Recent analyses
+            </h2>
+
+            <ul id="history-list" class="history-list">
+                <li class="history-empty">
+                    No analyses yet.
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>
+            JobFit AI &mdash; a portfolio project.
+            Not affiliated with any job board.
+        </p>
+    </footer>
+
+    <script type="module" src="./js/main.js"></script>
+</body>
+
 </html>
