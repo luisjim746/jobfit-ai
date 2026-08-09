@@ -6,11 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
-        content="JobFit AI analyzes job offers for junior and trainee developer roles and helps candidates prepare.">
+        content="JobFit AI compares your profile with a job offer and turns the analysis into a actionable application plan.">
+
+    <title>JobFit AI — Find your fit before you apply</title>
 
     <link rel="icon" href="data:,">
 
-    <title>JobFit AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="./css/styles.css">
 </head>
@@ -31,7 +38,7 @@
             <h1>JobFit AI</h1>
         </div>
 
-        <p class="tagline">Paste a job offer. Understand what it really asks for.</p>
+        <p class="tagline">Compare your profile with a job offer and build a focused application plan.</p>
     </header>
 
     <main id="main-content" tabindex="-1">
@@ -49,7 +56,7 @@
 
                 <span class="scan-corner scan-corner-br" aria-hidden="true"></span>
 
-                <h2 id="input-heading">Paste the job offer</h2>
+                <h2 id="input-heading">Job offer and candidate profile</h2>
 
                 <form id="analyze-form" novalidate>
                     <fieldset class="profile-fieldset" aria-describedby="profile-hint">
@@ -96,19 +103,36 @@
 
                     <div class="field">
                         <label for="offer-text">
-                            Job offer text
+                            Job offer 
                         </label>
 
-                        <textarea id="offer-text" name="jobDescription" rows="12" required
-                            aria-describedby="offer-text-hint offer-text-error"></textarea>
+                        <textarea id="job-description" name="jobDescription" rows="12" required
+                            aria-describedby="job-description-hint job-description-error"></textarea>
 
-                        <p id="offer-text-hint" class="field-hint">
+                        <p id="job-description-hint" class="field-hint">
                             Paste the full offer, including responsibilities,
                             requirements and preferred qualifications.
                         </p>
 
-                        <p id="offer-text-error" class="field-error" role="alert" hidden></p>
+                        <p id="job-description-error" class="field-error" role="alert" hidden></p>
                     </div>
+
+                    <!-- Candidate profile -->
+
+                    <div class="field">
+                        <label for="candidate-profile">Your current profile</label>
+
+                        <textarea id="candidate-profile" name="candidateProfile" rows="8" required 
+                        aria-describedby="candidate-profile-hint candidate-profile-error"></textarea>
+
+                        <p id="candidate-profile-hint" class="field-hint">
+                            Describe your skills, projects and experience. You can also paste a short CV summary.
+                        </p>
+
+                        <p id="candidate-profile-error" class="field-error" role="alert" hidden></p>
+                    </div>
+
+                    <!-- Submit -->
 
                     <button type="submit" id="analyze-button" class="btn-primary">
                         Analyze Offer
@@ -130,7 +154,8 @@
 
                 <h2 id="analysis-heading">Analysis</h2>
 
-                <!-- Empty state: visible by default -->
+                <!-- ==========EMPTY STATE================= -->
+
                 <div id="empty-state" class="state-empty">
                     <span class="state-icon" aria-hidden="true">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -142,18 +167,18 @@
                     </span>
 
                     <p>
-                        Paste a job offer and we'll tell you what it really asks for.
+                        Add the job offer and your current profile to discover your matches, gaps and next steps.
                     </p>
                 </div>
 
-                <!-- Loading state: activated later with JavaScript -->
+                <!-- ========================LOADING STATE================= -->
                 <div id="loading-state" class="state-loading" role="status" aria-live="polite" hidden>
                     <p class="loading-message">
-                        Analyzing the offer…
+                        Comparing your profile with the offer…
                     </p>
                 </div>
 
-                <!-- Error state: activated later with JavaScript -->
+                <!-- ================== ERROR STATE ======================= -->
                 <div id="error-state" class="state-error" hidden>
                     <p id="analysis-error-message" class="error-message" role="alert"></p>
 
@@ -162,70 +187,121 @@
                     </button>
                 </div>
 
-                <!-- Result state: populated later with JavaScript -->
+                <!--======================= RESULT STATE ======================= -->
                 <div id="result-state" hidden>
                     <div class="result-header">
-                        <span id="experience-level-badge" class="level-badge"></span>
-
+                        <div class="result-badges">
+                            <span id="recommendation-badge" class="recommendation-badge"></span>
+                            <span id="seniority-level-badge" class="level-badge"></span>
+                        </div>
+                        
                         <button type="button" id="copy-button" class="btn-secondary">
                             Copy analysis
                         </button>
                     </div>
 
-                    <section class="result-card" aria-labelledby="role-summary-heading">
-                        <h3 id="role-summary-heading">
-                            Role summary
+                    <!-- Recommendation reasoning -->
+                     <div class="recommendation-summary">
+                        <p id="recommendation-reasoning"></p>
+                     </div>
+
+                     <!-- 1. Role snapshot -->
+
+                    <section class="result-card" aria-labelledby="role-snapshot-heading">
+                        <h3 id="role-snapshot-heading">
+                            Role snapshot
                         </h3>
 
-                        <p id="role-summary"></p>
+                        <p id="role-snapshot"></p>
                     </section>
 
-                    <section class="result-card" aria-labelledby="required-skills-heading">
-                        <h3 id="required-skills-heading">
-                            Required skills
+                    <!-- 2. Must-have requirements -->
+
+                    <section class="result-card" aria-labelledby="must-have-heading">
+                        <h3 id="must-have-heading">
+                            Must have requirements
                         </h3>
 
-                        <ul id="required-skills" class="tag-list"></ul>
+                        <ul id="must-have-requirements" class="tag-list"></ul>
                     </section>
+
+                    <!-- 3. Nice-to-have requirements -->
 
                     <section class="result-card" aria-labelledby="nice-to-have-heading">
                         <h3 id="nice-to-have-heading">
-                            Nice-to-have skills
+                            Nice-to-have requirements
                         </h3>
 
-                        <ul id="nice-to-have-skills" class="tag-list"></ul>
+                        <ul id="nice-to-have-requirements" class="tag-list"></ul>
                     </section>
 
-                    <section class="result-card" aria-labelledby="experience-level-heading">
-                        <h3 id="experience-level-heading">
-                            Experience level
+                    <!-- 4. Seniority assessment -->
+
+                    <section class="result-card" aria-labelledby="seniority-heading">
+                        <h3 id="seniority-heading">
+                            Seniority assessment
                         </h3>
 
-                        <p id="experience-level-reasoning"></p>
+                        <p id="seniority-reasoning"></p>
                     </section>
 
-                    <section class="result-card" aria-labelledby="cv-keywords-heading">
-                        <h3 id="cv-keywords-heading">
-                            CV / LinkedIn keywords
+                    <!-- 5. Matches -->
+
+                    <section class="result-card" aria-labelledby="matches-heading">
+                        <h3 id="matches-heading">
+                            Your matches
                         </h3>
 
-                        <ul id="cv-keywords" class="tag-list"></ul>
+                        <ul id="candidate-matches" class="match-list"></ul>
                     </section>
 
-                    <section class="result-card" aria-labelledby="learning-gaps-heading">
-                        <h3 id="learning-gaps-heading">
-                            Learning gaps
+                    <!-- 6. Gaps -->
+
+                    <section class="result-card" aria-labelledby="gaps-heading">
+                        <h3 id="gaps-heading">
+                            Your gaps
                         </h3>
 
-                        <ul id="learning-gaps" class="tag-list"></ul>
+                        <ul id="candidate-gaps" class="gap-list"></ul>
                     </section>
 
-                    <section class="result-card" aria-labelledby="interview-checklist-heading">
-                        <h3 id="interview-checklist-heading">
-                            Interview preparation checklist
+                    <!-- 7. Application plan -->
+
+                    <section class="result-card application-plan" aria-labelledby="application-plan-heading">
+                        <h3 id="application-plan-heading">
+                            Application plan
                         </h3>
 
-                        <ul id="interview-checklist" class="checklist-list"></ul>
+                        <!-- CV keywords -->
+                         <div class="plan-group">
+                            <h4>CV / LinkedIn keywords</h4>
+                            <ul id="cv-keywords" class="tag-list"></ul>
+                         </div>
+
+                         <!-- Strengths -->
+                          <div class="plan-group">
+                            <h4>Strengths to highlight</h4>
+                            <ul id="strengths-to-highlight" class="plan-list"></ul>
+                          </div>
+
+                          <!-- Project evidence -->
+                           <div class="plan-group">
+                            <h4>Project evidence</h4>
+                            <ul id="project-evidence" class="plan-list"></ul>
+                           </div>
+
+                           <!-- Interview preparation -->
+                            <div class="plan-group">
+                                <h4>Interview preparation</h4>
+                                <ul id="interview-preparation" class="checklist-list"></ul>
+                            </div>
+
+                            <!-- Priority learning -->
+                             <div class="plan-group">
+                                <h4>Priority learning</h4>
+                                <ul id="priority-learning" class="plan-list"></ul>
+                             </div>
+
                     </section>
                 </div>
             </section>
@@ -246,6 +322,8 @@
         </section>
     </main>
 
+    <!-- ==================== FOOTER ==================== -->
+
     <footer class="site-footer">
         <p>
             JobFit AI &mdash; a portfolio project.
@@ -255,5 +333,4 @@
 
     <script type="module" src="./js/main.js"></script>
 </body>
-
 </html>
