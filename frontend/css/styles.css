@@ -54,7 +54,7 @@
   --space-12: 3rem;
   --space-16: 4rem;
 
-  /* Borders and radius */
+  /* Radius */
   --radius-small: 0.5rem;
   --radius-medium: 0.875rem;
   --radius-large: 1.25rem;
@@ -101,6 +101,7 @@ body,
 h1,
 h2,
 h3,
+h4,
 p,
 ul,
 fieldset {
@@ -236,6 +237,13 @@ h3 {
   text-transform: uppercase;
 }
 
+h4 {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
 p {
   text-wrap: pretty;
 }
@@ -286,7 +294,7 @@ p {
 }
 
 .tagline {
-  max-width: 34rem;
+  max-width: 42rem;
 
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.7);
@@ -434,9 +442,8 @@ main {
   color: var(--color-error-text);
 }
 
-textarea {
+.field textarea {
   width: 100%;
-  min-height: 17rem;
   padding: var(--space-4);
 
   font-size: 0.95rem;
@@ -444,6 +451,7 @@ textarea {
   color: var(--color-ink);
 
   resize: vertical;
+
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-medium);
@@ -454,17 +462,25 @@ textarea {
     background-color var(--transition-fast);
 }
 
-textarea:hover {
+#job-description {
+  min-height: 17rem;
+}
+
+#candidate-profile {
+  min-height: 10rem;
+}
+
+.field textarea:hover {
   border-color: #aeb5c7;
 }
 
-textarea:focus {
+.field textarea:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px var(--color-focus);
 }
 
-textarea[aria-invalid="true"] {
+.field textarea[aria-invalid="true"] {
   border-color: var(--color-error);
   background: var(--color-error-soft);
   box-shadow: 0 0 0 4px rgba(226, 61, 92, 0.12);
@@ -512,6 +528,7 @@ textarea[aria-invalid="true"] {
   text-align: center;
 
   cursor: pointer;
+
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
@@ -526,8 +543,9 @@ textarea[aria-invalid="true"] {
 
 .radio-option label:hover {
   color: var(--color-primary);
-  border-color: rgba(79, 63, 240, 0.45);
+
   background: var(--color-primary-soft);
+  border-color: rgba(79, 63, 240, 0.45);
 }
 
 .radio-option input:checked + label {
@@ -535,7 +553,16 @@ textarea[aria-invalid="true"] {
 
   background: var(--color-primary);
   border-color: var(--color-primary);
+
   box-shadow: 0 6px 16px rgba(79, 63, 240, 0.23);
+}
+
+.radio-option input:checked + label:hover {
+  background: var(--color-primary-hover);
+}
+
+.radio-option input:focus-visible {
+  outline: none;
 }
 
 .radio-option input:focus-visible + label {
@@ -595,6 +622,7 @@ textarea[aria-invalid="true"] {
 .btn-primary:hover {
   background: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
+
   transform: translateY(-1px);
 }
 
@@ -612,12 +640,14 @@ textarea[aria-invalid="true"] {
 
 .btn-secondary:hover {
   color: var(--color-primary);
-  border-color: rgba(79, 63, 240, 0.45);
+
   background: var(--color-primary-soft);
+  border-color: rgba(79, 63, 240, 0.45);
 }
 
 button:disabled {
   cursor: not-allowed;
+
   opacity: 0.55;
   box-shadow: none;
   transform: none;
@@ -655,7 +685,7 @@ button:disabled {
 }
 
 .state-empty p {
-  max-width: 28rem;
+  max-width: 30rem;
 }
 
 .state-icon {
@@ -686,12 +716,14 @@ button:disabled {
 
   content: "";
 
-  background: linear-gradient(
-    90deg,
-    #e2e5ec 20%,
-    #f5f6f9 45%,
-    #e2e5ec 70%
-  );
+  background:
+    linear-gradient(
+      90deg,
+      #e2e5ec 20%,
+      #f5f6f9 45%,
+      #e2e5ec 70%
+    );
+
   background-size: 200% 100%;
   border-radius: var(--radius-pill);
 
@@ -719,6 +751,7 @@ button:disabled {
   color: var(--color-error-text);
 
   background: var(--color-error-soft);
+
   border-style: solid;
   border-color: rgba(226, 61, 92, 0.25);
   border-left: 4px solid var(--color-error);
@@ -746,10 +779,10 @@ button:disabled {
 
 
 /* =========================================================
-   13. RESULTS
+   13. RESULT HEADER
    ========================================================= */
 
-#result-state {
+#result-state:not([hidden]) {
   display: grid;
   gap: var(--space-4);
 }
@@ -761,10 +794,17 @@ button:disabled {
   justify-content: space-between;
   gap: var(--space-3);
 
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
-.level-badge {
+.result-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.level-badge,
+.recommendation-badge {
   display: inline-flex;
   min-height: 2rem;
   align-items: center;
@@ -774,34 +814,76 @@ button:disabled {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 500;
+
+  border-radius: var(--radius-pill);
+}
+
+.level-badge {
   color: var(--color-primary);
 
   background: var(--color-primary-soft);
   border: 1px solid rgba(79, 63, 240, 0.2);
-  border-radius: var(--radius-pill);
 }
 
-.level-badge:empty {
+.level-badge:empty,
+.recommendation-badge:empty {
   display: none;
 }
 
-.level-badge--trainee {
+
+/* =========================================================
+   14. RECOMMENDATION BADGES
+   ========================================================= */
+
+.recommendation-badge {
+  font-weight: 600;
+}
+
+.recommendation-badge--apply-now {
   color: var(--color-success-text);
+
   background: var(--color-success-soft);
-  border-color: rgba(20, 184, 166, 0.28);
+  border: 1px solid rgba(20, 184, 166, 0.3);
 }
 
-.level-badge--junior {
-  color: var(--color-primary);
-  background: var(--color-primary-soft);
-  border-color: rgba(79, 63, 240, 0.25);
-}
-
-.level-badge--mid {
+.recommendation-badge--prepare {
   color: var(--color-warning-text);
+
   background: var(--color-warning-soft);
-  border-color: rgba(245, 158, 11, 0.32);
+  border: 1px solid rgba(245, 158, 11, 0.32);
 }
+
+.recommendation-badge--low-fit {
+  color: var(--color-error-text);
+
+  background: var(--color-error-soft);
+  border: 1px solid rgba(226, 61, 92, 0.28);
+}
+
+.recommendation-summary {
+  padding: var(--space-4);
+
+  color: var(--color-text);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(79, 63, 240, 0.055),
+      rgba(79, 63, 240, 0.015)
+    );
+
+  border: 1px solid rgba(79, 63, 240, 0.12);
+  border-radius: var(--radius-medium);
+}
+
+.recommendation-summary p {
+  margin: 0;
+}
+
+
+/* =========================================================
+   15. RESULT CARDS
+   ========================================================= */
 
 .result-card {
   min-width: 0;
@@ -862,7 +944,7 @@ button:disabled {
 
 
 /* =========================================================
-   14. TAGS AND CHECKLIST
+   16. REQUIREMENT TAGS
    ========================================================= */
 
 .tag-list {
@@ -885,41 +967,209 @@ button:disabled {
   border-radius: var(--radius-pill);
 }
 
-#required-skills li {
+#must-have-requirements li {
   color: #ffffff;
+
   background: var(--color-primary);
   border: 1px solid var(--color-primary);
 }
 
-#nice-to-have-skills li {
+#nice-to-have-requirements li {
   color: var(--color-success-text);
+
   background: var(--color-success-soft);
   border: 1px solid rgba(20, 184, 166, 0.42);
 }
 
 #cv-keywords li {
   color: var(--color-text);
+
   background: var(--color-surface-muted);
   border: 1px dashed var(--color-border-strong);
 }
 
-#learning-gaps li {
-  color: var(--color-warning-text);
-  background: var(--color-warning-soft);
-  border: 1px solid rgba(245, 158, 11, 0.35);
+
+/* =========================================================
+   17. MATCHES
+   ========================================================= */
+
+.match-list {
+  display: grid;
+  gap: var(--space-3);
 }
 
+.match-list li {
+  padding: var(--space-4);
+
+  background: var(--color-success-soft);
+  border: 1px solid rgba(20, 184, 166, 0.24);
+  border-radius: var(--radius-medium);
+}
+
+.match-requirement {
+  display: block;
+
+  margin-bottom: var(--space-1);
+
+  font-weight: 600;
+  color: var(--color-success-text);
+}
+
+.match-evidence {
+  display: block;
+
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+
+/* =========================================================
+   18. GAPS
+   ========================================================= */
+
+.gap-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.gap-list li {
+  padding: var(--space-4);
+
+  background: var(--color-warning-soft);
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  border-left: 4px solid var(--color-warning);
+  border-radius: var(--radius-medium);
+}
+
+.gap-requirement {
+  display: block;
+
+  margin-bottom: var(--space-2);
+
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.gap-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-2);
+}
+
+.gap-type,
+.gap-priority {
+  display: inline-flex;
+
+  padding: 0.25rem 0.55rem;
+
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+
+  border-radius: var(--radius-pill);
+}
+
+.gap-type {
+  color: var(--color-warning-text);
+
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.gap-type--missing {
+  color: var(--color-error-text);
+
+  background: var(--color-error-soft);
+  border-color: rgba(226, 61, 92, 0.25);
+}
+
+.gap-type--not-demonstrated {
+  color: var(--color-warning-text);
+}
+
+.gap-priority--high {
+  color: var(--color-error-text);
+
+  background: var(--color-error-soft);
+  border: 1px solid rgba(226, 61, 92, 0.25);
+}
+
+.gap-priority--medium {
+  color: var(--color-warning-text);
+
+  background: #ffffff;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.gap-priority--low {
+  color: var(--color-success-text);
+
+  background: var(--color-success-soft);
+  border: 1px solid rgba(20, 184, 166, 0.25);
+}
+
+.gap-suggestion {
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+
+/* =========================================================
+   19. APPLICATION PLAN
+   ========================================================= */
+
+.application-plan {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.application-plan > h3 {
+  margin-bottom: 0;
+}
+
+.plan-group {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.plan-group h4 {
+  margin-bottom: var(--space-3);
+}
+
+.plan-group:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.plan-list,
 .checklist-list {
   display: grid;
   gap: var(--space-3);
 }
 
+.plan-list li,
 .checklist-list li {
   position: relative;
 
-  padding-left: 1.75rem;
+  padding-left: 1.6rem;
 
   color: var(--color-text);
+}
+
+.plan-list li::before {
+  position: absolute;
+  top: 0.65rem;
+  left: 0;
+
+  width: 0.4rem;
+  height: 0.4rem;
+
+  content: "";
+
+  background: var(--color-primary);
+  border-radius: 50%;
 }
 
 .checklist-list li::before {
@@ -937,17 +1187,17 @@ button:disabled {
   border-radius: 0.25rem;
 }
 
-.checklist-list label {
-  cursor: pointer;
-}
-
 .checklist-list input[type="checkbox"] {
   accent-color: var(--color-primary);
 }
 
+#priority-learning li::before {
+  background: var(--color-warning);
+}
+
 
 /* =========================================================
-   15. HISTORY
+   20. HISTORY
    ========================================================= */
 
 .history-section {
@@ -981,16 +1231,18 @@ button:disabled {
 
 .history-list button {
   display: grid;
+
   min-width: 13rem;
   max-width: 18rem;
-  gap: var(--space-1);
 
+  gap: var(--space-1);
   padding: var(--space-3) var(--space-4);
 
   color: var(--color-text);
   text-align: left;
 
   cursor: pointer;
+
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-medium);
@@ -1002,8 +1254,9 @@ button:disabled {
 }
 
 .history-list button:hover {
-  border-color: rgba(79, 63, 240, 0.4);
   background: var(--color-primary-soft);
+  border-color: rgba(79, 63, 240, 0.4);
+
   transform: translateY(-1px);
 }
 
@@ -1014,7 +1267,7 @@ button:disabled {
 
 
 /* =========================================================
-   16. FOOTER
+   21. FOOTER
    ========================================================= */
 
 .site-footer {
@@ -1034,7 +1287,7 @@ button:disabled {
 
 
 /* =========================================================
-   17. TABLET
+   22. TABLET
    ========================================================= */
 
 @media (min-width: 48rem) {
@@ -1077,7 +1330,7 @@ button:disabled {
 
 
 /* =========================================================
-   18. DESKTOP
+   23. DESKTOP
    ========================================================= */
 
 @media (min-width: 64rem) {
@@ -1087,9 +1340,11 @@ button:disabled {
 
   .workspace {
     display: grid;
+
     grid-template-columns:
       minmax(0, 0.82fr)
       minmax(0, 1fr);
+
     align-items: start;
     gap: var(--space-6);
   }
@@ -1099,14 +1354,18 @@ button:disabled {
     top: var(--space-6);
   }
 
-  textarea {
-    min-height: 21rem;
+  #job-description {
+    min-height: 19rem;
+  }
+
+  #candidate-profile {
+    min-height: 11rem;
   }
 }
 
 
 /* =========================================================
-   19. REDUCED MOTION
+   24. REDUCED MOTION
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1125,8 +1384,7 @@ button:disabled {
 
 
 /* =========================================================
-   20. HIDDEN STATES
-   Keep this rule after state display declarations.
+   25. HIDDEN STATES
    ========================================================= */
 
 [hidden] {
