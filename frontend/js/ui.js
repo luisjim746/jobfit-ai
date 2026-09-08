@@ -141,6 +141,12 @@ function renderRecommendation(fitAssessment) {
   recommendationReasoning.textContent = fitAssessment.reasoning;
 }
 
+/**
+ * @param {{
+ *   level: 'trainee' | 'junior' | 'mid' | 'senior',
+ *   reasoning: string
+ * }} seniorityAssessment
+ */
 function renderSeniority(seniorityAssessment) {
   seniorityBadge.textContent = capitalize(seniorityAssessment.level);
   seniorityReasoningEl.textContent = seniorityAssessment.reasoning;
