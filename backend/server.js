@@ -16,6 +16,18 @@ app.get('/api/health', (_request, response) => {
 
 app.use('/api/analyze', analyzeRouter);
 
+// Return a predictable JSON response for unknown routes.
+app.use((_request, response) => {
+  return response.status(404).json({
+    success: false,
+    error: {
+      code: 'NOT_FOUND',
+      message: 'Route not found.',
+    },
+  });
+});
+
+// Centralized error handler.
 app.use((error, request, response, next) => {
   if (
     error instanceof SyntaxError &&
