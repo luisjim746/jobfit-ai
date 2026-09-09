@@ -60,11 +60,6 @@ export function saveToHistory({ profile, jobDescription, result }) {
   return entry;
 }
 
-/**
- * @param {string} id
- * @returns {object|undefined}
- */
-
 function buildPreview(text) {
   const normalized = text.trim().replace(/\s+/g, ' ');
   if (normalized.length <= PREVIEW_LENGTH) return normalized;

@@ -31,6 +31,23 @@ app.use((error, request, response, next) => {
     });
   }
 
+  const isControlledError =
+  error.isOperational === true &&
+  Number.isInteger(error.status) &&
+  error.status >= 400 &&
+  error.status < 600;
+
+  if (isControlledError) {
+    if (error.status >= 500) console.error(error);
+    return response.status(error.status).json({
+      success: false,
+      error: {
+        code: error.code || 'INTERNAL_SERVER_ERROR',
+        message: error.message,
+      },
+    });
+  }
+
   console.error(error);
 
   return response.status(500).json({
