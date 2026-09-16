@@ -109,6 +109,32 @@ export function clearFieldError(fieldId) {
 }
 
 /**
+ * Resets every result field to empty. Called when a new analysis starts,
+ * so the previous analysis is never left sitting in the DOM (even hidden)
+ * while a new one is in flight — only renderResult() ever repopulates it.
+ * Does not touch showState() or which panel is visible; that's the
+ * caller's job.
+ */
+export function clearResult() {
+  recommendationBadge.textContent = '';
+  recommendationBadge.className = 'recommendation-badge';
+  seniorityBadge.textContent = '';
+  recommendationReasoning.textContent = '';
+  roleSnapshotEl.textContent = '';
+  seniorityReasoningEl.textContent = '';
+
+  clearChildren(mustHaveListEl);
+  clearChildren(niceToHaveListEl);
+  clearChildren(matchesListEl);
+  clearChildren(gapsListEl);
+  clearChildren(cvKeywordsListEl);
+  clearChildren(strengthsListEl);
+  clearChildren(projectEvidenceListEl);
+  clearChildren(interviewPrepListEl);
+  clearChildren(priorityLearningListEl);
+}
+
+/**
  * Renders a full analysis (the structured contract) into the result panel.
  * Does not show the result state itself — call showState('result') after.
  * @param {object} data

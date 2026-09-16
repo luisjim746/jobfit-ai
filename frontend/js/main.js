@@ -11,14 +11,13 @@ import {
     setFieldError,
     clearFieldError,
     renderResult,
+    clearResult,
     renderHistory,
     showCopyFeedback,
 } from './ui.js';
 import { getHistory, saveToHistory } from './storage.js';
 
 const form = document.getElementById('analyze-form');
-const jobDescriptionField = document.getElementById('job-description');
-const candidateProfileField = document.getElementById('candidate-profile');
 const retryButton = document.getElementById('retry-button');
 const copyButton = document.getElementById('copy-button');
 
@@ -35,6 +34,15 @@ const ALLOWED_PROFILES = ['frontend', 'javascript', 'react', 'fullstack', 'other
 let lastRequest = null;
 let lastResult = null;
 
+// Explicit in-flight guard. The submit button being disabled during a
+// request already blocks a second click in practice, but that's a side
+// effect of a UI-facing function (setAnalyzing), not a guarantee at the
+// logic level — and it doesn't cover every path that can call
+// runAnalysis (retry included). This flag is the actual source of truth
+// for "is a request already running", checked before either entry point
+// does anything else.
+let isAnalyzing = false;
+
 init();
 
 function init() {
@@ -47,6 +55,8 @@ function init() {
 
 async function handleSubmit(event) {
     event.preventDefault();
+
+    if (isAnalyzing) return;
 
     const formData = new FormData(form);
     const payload = {
@@ -62,12 +72,21 @@ async function handleSubmit(event) {
 }
 
 async function handleRetry() {
+    if (isAnalyzing) return;
     if (!lastRequest) return;
     await runAnalysis(lastRequest);
 }
 
 async function runAnalysis(payload) {
+    isAnalyzing = true;
     setAnalyzing(true);
+
+    // The previous analysis (if any) must not keep sitting in the DOM or
+    // in `lastResult` while this new one is loading — otherwise the UI
+    // state (loading) and the internal/DOM state (old analysis) would be
+    // two out-of-sync sources of truth.
+    lastResult = null;
+    clearResult();
     showState('loading');
 
     try {
@@ -85,6 +104,7 @@ async function runAnalysis(payload) {
     } catch (error) {
         showErrorState(error.message);
     } finally {
+        isAnalyzing = false;
         setAnalyzing(false);
     }
 }
