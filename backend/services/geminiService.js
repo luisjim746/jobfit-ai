@@ -5,6 +5,7 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { buildAnalysisPrompt } from './promptBuilder.js';
+import { validateAnalysisResponse } from '../validators/analysisResponseValidator.js';
 
 const DEFAULT_MODEL = 'gemini-3.6-flash';
 const MODEL_NAME = process.env.GEMINI_MODEL || DEFAULT_MODEL;
@@ -36,10 +37,11 @@ function getClient() {
 /**
  * @param {{ jobDescription: string, candidateProfile: string, profile: string }} input
  *   Already validated and trimmed by routes/analyze.js.
- * @returns {Promise<object>} the parsed JSON Gemini returned. This is the
- *   provider's raw response made available to the next processing step —
- *   checking it actually matches the analysis contract (required fields,
- *   valid enum values) is deliberately not done here.
+ * @returns {Promise<object>} an analysis object that has been checked
+ *   against the JobFit AI contract (required fields present, enum values
+ *   valid). This is what "made available to the next processing step" in
+ *   the previous ticket has become: this step is the validation itself —
+ *   only a validated analysis is ever returned.
  */
 export async function analyzeJobOffer({ jobDescription, candidateProfile, profile }) {
   const client = getClient();
@@ -69,8 +71,28 @@ export async function analyzeJobOffer({ jobDescription, candidateProfile, profil
     });
   }
 
+  return parseAndValidateAnalysis(response.text);
+
+}
+
+/**
+ * Parses raw text as JSON and checks it against the analysis contract.
+ * Split out from analyzeJobOffer so it can be unit-tested with crafted
+ * strings, without needing a real (or mocked) network call.
+ *
+ * @param {string} rawText
+ * @returns {object} a contract-valid analysis
+ * @throws {Error} a controlled PROVIDER_INVALID_RESPONSE error if the text
+ *   isn't valid JSON, or is valid JSON that doesn't match the contract.
+ *   The specific reason (parse error, or which field failed) is attached
+ *   as .cause for server logs only — never sent to the client, since it
+ *   describes our own contract/prompt, not something the user can act on.
+ */
+export function parseAndValidateAnalysis(rawText) {
+  let analysis;
+
   try {
-    return JSON.parse(response.text);
+    analysis = JSON.parse(rawText);
   } catch (cause) {
     throw operationalError({
       status: 502,
@@ -79,6 +101,19 @@ export async function analyzeJobOffer({ jobDescription, candidateProfile, profil
       cause,
     });
   }
+
+  const validationErrors = validateAnalysisResponse(analysis);
+
+  if (validationErrors.length > 0) {
+    throw operationalError({
+      status: 502,
+      code: 'PROVIDER_INVALID_RESPONSE',
+      message: 'The analysis provider returned an unexpected response.',
+      cause: new Error(`Analysis response failed contract validation: ${JSON.stringify(validationErrors)}`),
+    });
+  }
+
+  return analysis;
 }
 
 // Builds an error the same way geminiService always has (status/code/
