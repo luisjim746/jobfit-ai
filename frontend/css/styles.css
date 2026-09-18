@@ -1250,14 +1250,11 @@ button:disabled {
   transition:
     border-color var(--transition-fast),
     background-color var(--transition-fast),
-    transform var(--transition-fast);
 }
 
 .history-list button:hover {
   background: var(--color-primary-soft);
   border-color: rgba(79, 63, 240, 0.4);
-
-  transform: translateY(-1px);
 }
 
 .history-empty {
