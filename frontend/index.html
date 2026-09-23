@@ -63,7 +63,7 @@
                         <legend>Target profile</legend>
 
                         <p id="profile-hint" class="field-hint">
-                            General Tech Role is selected by default.
+                            Other Tech Role is selected by default.
                         </p>
 
                         <div class="radio-group">
@@ -100,10 +100,10 @@
                             </div>
 
                             <div class="radio-option">
-                                <input type="radio" id="profile-general" name="profile" value="other" checked>
+                                <input type="radio" id="profile-other" name="profile" value="other" checked>
 
-                                <label for="profile-general">
-                                    General / Other Tech Role
+                                <label for="profile-other">
+                                    Other Tech Role
                                 </label>
                             </div>
                         </div>
@@ -215,65 +215,69 @@
                         <p id="recommendation-reasoning"></p>
                      </div>
 
-                     <!-- 1. Role snapshot -->
+                     <div class="result-summary-grid">
+                        <!-- 1. Role snapshot -->
 
-                    <section class="result-card" aria-labelledby="role-snapshot-heading">
-                        <h3 id="role-snapshot-heading">
-                            Role snapshot
-                        </h3>
+                        <section class="result-card" aria-labelledby="role-snapshot-heading">
+                            <h3 id="role-snapshot-heading">
+                                Role snapshot
+                            </h3>
 
-                        <p id="role-snapshot"></p>
-                    </section>
+                            <p id="role-snapshot"></p>
+                        </section>
 
-                    <!-- 2. Must-have requirements -->
+                        <!-- 2. Must-have requirements -->
 
-                    <section class="result-card" aria-labelledby="must-have-heading">
-                        <h3 id="must-have-heading">
-                            Must have requirements
-                        </h3>
+                        <section class="result-card" aria-labelledby="must-have-heading">
+                            <h3 id="must-have-heading">
+                                Must have requirements
+                            </h3>
 
-                        <ul id="must-have-requirements" class="tag-list"></ul>
-                    </section>
+                            <ul id="must-have-requirements" class="tag-list"></ul>
+                        </section>
 
-                    <!-- 3. Nice-to-have requirements -->
+                        <!-- 3. Nice-to-have requirements -->
 
-                    <section class="result-card" aria-labelledby="nice-to-have-heading">
-                        <h3 id="nice-to-have-heading">
-                            Nice-to-have requirements
-                        </h3>
+                        <section class="result-card" aria-labelledby="nice-to-have-heading">
+                            <h3 id="nice-to-have-heading">
+                                Nice-to-have requirements
+                            </h3>
 
-                        <ul id="nice-to-have-requirements" class="tag-list"></ul>
-                    </section>
+                            <ul id="nice-to-have-requirements" class="tag-list"></ul>
+                        </section>
 
-                    <!-- 4. Seniority assessment -->
+                        <!-- 4. Seniority assessment -->
 
-                    <section class="result-card" aria-labelledby="seniority-heading">
-                        <h3 id="seniority-heading">
-                            Seniority assessment
-                        </h3>
+                        <section class="result-card" aria-labelledby="seniority-heading">
+                            <h3 id="seniority-heading">
+                                Seniority assessment
+                            </h3>
 
-                        <p id="seniority-reasoning"></p>
-                    </section>
+                            <p id="seniority-reasoning"></p>
+                        </section>
+                    </div>
 
-                    <!-- 5. Matches -->
+                    <div class="result-pair-grid">
+                        <!-- 5. Matches -->
 
-                    <section class="result-card" aria-labelledby="matches-heading">
-                        <h3 id="matches-heading">
-                            Your matches
-                        </h3>
+                        <section class="result-card" aria-labelledby="matches-heading">
+                            <h3 id="matches-heading">
+                                Your matches
+                            </h3>
 
-                        <ul id="candidate-matches" class="match-list"></ul>
-                    </section>
+                            <ul id="candidate-matches" class="match-list"></ul>
+                        </section>
 
-                    <!-- 6. Gaps -->
+                        <!-- 6. Gaps -->
 
-                    <section class="result-card" aria-labelledby="gaps-heading">
-                        <h3 id="gaps-heading">
-                            Your gaps
-                        </h3>
+                        <section class="result-card" aria-labelledby="gaps-heading">
+                            <h3 id="gaps-heading">
+                                Your gaps
+                            </h3>
 
-                        <ul id="candidate-gaps" class="gap-list"></ul>
-                    </section>
+                            <ul id="candidate-gaps" class="gap-list"></ul>
+                        </section>
+                    </div>
 
                     <!-- 7. Application plan -->
 

@@ -11,6 +11,8 @@ const stateElements = {
   result: document.getElementById('result-state'),
 };
 
+const workspaceEl = document.querySelector('.workspace');
+
 const errorMessageEl = document.getElementById('analysis-error-message');
 const analyzeButton = document.getElementById('analyze-button');
 
@@ -67,6 +69,10 @@ export function showState(name) {
   for (const [key, el] of Object.entries(stateElements)) {
     if (!el) continue;
     el.hidden = key !== name;
+  }
+
+  if (workspaceEl) {
+  workspaceEl.classList.toggle('analysis-active', name !== 'empty');
   }
 }
 
