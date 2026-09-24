@@ -53,6 +53,35 @@ Reading a job offer and guessing whether you're a good fit is hard — offers mi
   <img src="screenshots/mobile-view.png" alt="JobFit AI mobile view" width="300">
 </p>
 
+## Try it with sample data
+
+Don't have a job offer handy? Copy these examples into the live demo.
+
+### Job offer
+
+Junior Frontend Developer
+
+We are looking for a junior frontend developer with solid knowledge of
+HTML, CSS and JavaScript. Experience with React and Git is required.
+The candidate should understand responsive design and REST APIs.
+
+Nice to have:
+- TypeScript
+- Testing with Vitest or Jest
+- Basic knowledge of CI/CD
+
+### Candidate profile
+
+Junior frontend developer with projects built using HTML, CSS and
+JavaScript. Comfortable with Git and GitHub, responsive layouts and
+consuming REST APIs.
+
+Built JobFit AI using vanilla JavaScript and worked with Node.js and
+Express for the backend.
+
+Currently learning React. No professional experience with TypeScript
+or automated testing yet.
+
 ## Features
 
 - Paste a job offer and your own profile (skills, projects, experience — a short CV summary works too).
