@@ -890,6 +890,7 @@ button:disabled {
   display: grid;
   min-width: 0;
   gap: var(--space-4);
+  align-items: start;
 }
 
 .result-card {
